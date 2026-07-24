@@ -1,0 +1,32 @@
+<div class="course-detail-container">
+  <a routerLink="/courses" class="back-link">&larr; Back to Courses</a>
+
+  <div *ngIf="course; else notFound" class="detail-card">
+    <div class="detail-header">
+      <h2>{{ course.name }}</h2>
+      <span class="code-tag">{{ course.code }}</span>
+    </div>
+
+    <div class="detail-info">
+      <p><strong>Credits:</strong> {{ course.credits | creditLabel }}</p>
+      <p><strong>Grade Status:</strong> {{ course.gradeStatus | uppercase }}</p>
+      <p><strong>Course ID:</strong> {{ course.id }}</p>
+    </div>
+
+    <div class="students-section">
+      <h3>Enrolled Students (switchMap Stream):</h3>
+      <ul *ngIf="enrolledStudents.length > 0; else noStudents">
+        <li *ngFor="let student of enrolledStudents">{{ student.name }} (ID: {{ student.id }})</li>
+      </ul>
+      <ng-template #noStudents>
+        <p>No students enrolled yet in this course.</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <ng-template #notFound>
+    <div class="not-found-msg">
+      <p>Course not found.</p>
+    </div>
+  </ng-template>
+</div>

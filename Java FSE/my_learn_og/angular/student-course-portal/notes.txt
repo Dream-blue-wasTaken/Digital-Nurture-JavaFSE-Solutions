@@ -1,0 +1,63 @@
+# Angular (v20.0) Hands-On Exercises Notes & Explanations
+
+## Hands-On 1: Project Setup & Structure
+
+### File Explanations (Task 1, Step 2)
+1. angular.json: Workspace configuration file defining project options, build/serve targets, assets, global styles, and CLI behavior.
+2. tsconfig.json: Root TypeScript configuration specifying compiler target, module resolution rules, and global TypeScript options.
+3. tsconfig.app.json: Application-specific TypeScript config extending tsconfig.json for compiling source code (excluding specs).
+4. package.json: Contains project metadata, npm dependencies, dev dependencies, and execution scripts (start, build, test).
+5. src/main.ts: Application entry point that bootstraps the root component (AppComponent) using bootstrapApplication and app.config.ts.
+6. src/app/app.config.ts: Configuration file establishing application providers (e.g., provideRouter, provideHttpClient) in standalone Angular.
+7. src/app/app.ts: The root component class managing the main layout, state, and top-level application container.
+8. src/index.html: The host single-page HTML document containing the <app-root> selector where Angular mounts the application.
+
+### Build & Budgets (Task 1, Steps 4 & 5)
+- Compiled Code File: `dist/student-course-portal/browser/main-<hash>.js` contains the compiled Angular application logic.
+- Budgets Configuration: `maximumWarning` (e.g., 500kB) emits a compiler warning during `ng build` if bundle size exceeds the limit; `maximumError` (e.g., 1MB) causes the build to fail if bundle size exceeds the threshold. These safeguard against production bundle size bloat.
+
+---
+
+## Hands-On 2: Data Binding & Lifecycle Hooks
+
+### Binding Types (Task 1, Step 15)
+- `[property]` (One-Way Binding): Data flows unidirectionally from the component TypeScript property down to the DOM element property (Component -> DOM).
+- `[(ngModel)]` (Two-Way Binding): Syntactic shorthand combining property binding `[ngModel]` and event binding `(ngModelChange)`, establishing bidirectional synchronization (DOM <-> Component).
+
+---
+
+## Hands-On 3: Directives & Pipes
+
+### Performance & Design Cleanliness (Task 1 & 2, Steps 26 & 32)
+- `trackBy` Function: Improves list rendering performance by tracking array items by a unique identifier (`course.id`). Instead of destroying and re-creating all DOM nodes on array updates, Angular reuses existing nodes and updates only modified items.
+- Getter for `ngClass` (`get cardClasses()`): Moving class object evaluation into a TypeScript getter keeps HTML templates clean and readable, prevents repetitive inline code, and allows unit testing of class computation logic.
+
+---
+
+## Hands-On 5: Reactive Forms & Custom Validation
+
+### Form Methods & Typed Getters (Task 1 & 2, Steps 52 & 57)
+- `enrollForm.value` vs `enrollForm.getRawValue()`: `enrollForm.value` contains values of active controls only (excluding disabled controls). `enrollForm.getRawValue()` returns an object containing values for ALL controls regardless of disabled status.
+- Typed Getter for `FormArray`: Using `get additionalCourses()` as a typed getter in TypeScript avoids explicit type casting (`as FormArray`) inside HTML templates, providing full IDE IntelliSense and compile-time type safety.
+
+---
+
+## Hands-On 6: Services & Dependency Injection
+
+### Component-Level Providers (Task 2, Step 67)
+- `providers: [NotificationService]` on `@Component`: Providing a service at the component level bypasses the root injector and creates a distinct instance bound to the lifecycle of that specific component and its children. It ensures isolated state rather than sharing global application state.
+
+---
+
+## Hands-On 7: Angular Routing
+
+### CanDeactivate Route Guards (Task 2, Step 77)
+- `CanDeactivate` Guard: Intercepts navigation attempts away from an active route. It allows inspecting component state (e.g., `form.dirty`) and prompting the user for confirmation to prevent accidental loss of unsubmitted form data.
+
+---
+
+## Hands-On 8: HTTP Client & RxJS Operators
+
+### RxJS Operators (Task 2, Steps 85 & 87)
+- `tap` vs `map`: `tap` is designed for transparent side effects (logging, debugging) and does not modify stream values. `map` transforms and returns new values down the RxJS stream pipeline.
+- `switchMap`: Automatically unsubscribes from and cancels any previous inner Observable/HTTP request whenever a new value arrives on the outer stream. This prevents race conditions and out-of-order responses in typeahead search and dependent HTTP requests.
