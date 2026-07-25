@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store';
 import { Course } from '../../models/course.model';
-
 export const enrollInCourse = createAction(
   '[Enrollment] Enroll In Course',
   props<{ courseId: number }>()

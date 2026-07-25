@@ -1,24 +1,16 @@
 <div class="home-container">
-  <!-- String interpolation (Step 11) -->
   <h1>{{ portalName }}</h1>
   <p class="description">Welcome to the student course management dashboard. Explore active courses, manage your enrollment, and check grade statuses.</p>
-
   <div class="action-card">
-    <!-- Property binding & Event binding (Step 12 & 13) -->
     <button class="btn btn-primary" [disabled]="!isPortalActive" (click)="onEnrollClick()">Enroll Now</button>
     <p *ngIf="message" class="enroll-message">{{ message }}</p>
   </div>
-
   <div class="search-section">
     <label for="home-search">Quick Search:</label>
-    <!-- Two-way binding with ngModel (Step 14) -->
     <input id="home-search" type="text" [(ngModel)]="searchTerm" placeholder="Search courses or keywords...">
     <p *ngIf="searchTerm" class="search-live">Searching for: {{ searchTerm }}</p>
   </div>
-
-  <!-- Component-scoped provider notification -->
   <app-notification></app-notification>
-
   <div class="stats-row">
     <div class="stat-card">
       <h3>Courses Available</h3>

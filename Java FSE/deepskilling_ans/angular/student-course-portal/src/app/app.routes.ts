@@ -9,7 +9,6 @@ import { ReactiveEnrollmentFormComponent } from './pages/reactive-enrollment-for
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { authGuard } from './guards/auth.guard';
 import { unsavedChangesGuard } from './guards/unsaved-changes.guard';
-
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   {

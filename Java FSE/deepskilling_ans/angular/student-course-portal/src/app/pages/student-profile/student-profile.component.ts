@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { EnrollmentService } from '../../services/enrollment.service';
 import { Course } from '../../models/course.model';
 import { CreditLabelPipe } from '../../pipes/credit-label.pipe';
-
 @Component({
   selector: 'app-student-profile',
   standalone: true,
@@ -18,11 +17,8 @@ export class StudentProfileComponent implements OnInit {
     id: 'STU-98241',
     major: 'Computer Science'
   };
-
   enrolledCourses: Course[] = [];
-
   constructor(private enrollmentService: EnrollmentService) {}
-
   ngOnInit(): void {
     this.enrolledCourses = this.enrollmentService.getEnrolledCourses();
   }

@@ -4,12 +4,10 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { CourseListComponent } from './course-list.component';
-
 describe('CourseListComponent', () => {
   let component: CourseListComponent;
   let fixture: ComponentFixture<CourseListComponent>;
   let store: MockStore;
-
   const initialState = {
     course: {
       courses: [
@@ -22,7 +20,6 @@ describe('CourseListComponent', () => {
       enrolledCourseIds: [1]
     }
   };
-
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CourseListComponent],
@@ -33,13 +30,11 @@ describe('CourseListComponent', () => {
         provideRouter([])
       ]
     }).compileComponents();
-
     store = TestBed.inject(MockStore);
     fixture = TestBed.createComponent(CourseListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-
   it('should create', () => {
     expect(component).toBeTruthy();
   });

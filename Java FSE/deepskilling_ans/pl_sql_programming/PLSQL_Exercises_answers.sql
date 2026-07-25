@@ -1,6 +1,3 @@
--- Schema Setup and Sample Data
--- Run this schema script first before running individual exercises.
-
 CREATE TABLE Customers (
     CustomerID NUMBER PRIMARY KEY,
     Name VARCHAR2(100),
@@ -9,7 +6,6 @@ CREATE TABLE Customers (
     LastModified DATE,
     IsVIP CHAR(1) DEFAULT 'F'
 );
-
 CREATE TABLE Accounts (
     AccountID NUMBER PRIMARY KEY,
     CustomerID NUMBER,
@@ -18,7 +14,6 @@ CREATE TABLE Accounts (
     LastModified DATE,
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
 );
-
 CREATE TABLE Transactions (
     TransactionID NUMBER PRIMARY KEY,
     AccountID NUMBER,
@@ -27,7 +22,6 @@ CREATE TABLE Transactions (
     TransactionType VARCHAR2(10),
     FOREIGN KEY (AccountID) REFERENCES Accounts(AccountID)
 );
-
 CREATE TABLE Loans (
     LoanID NUMBER PRIMARY KEY,
     CustomerID NUMBER,
@@ -37,7 +31,6 @@ CREATE TABLE Loans (
     EndDate DATE,
     FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
 );
-
 CREATE TABLE Employees (
     EmployeeID NUMBER PRIMARY KEY,
     Name VARCHAR2(100),
@@ -46,7 +39,6 @@ CREATE TABLE Employees (
     Department VARCHAR2(50),
     HireDate DATE
 );
-
 CREATE TABLE AuditLog (
     LogID NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     TransactionID NUMBER,
@@ -55,40 +47,23 @@ CREATE TABLE AuditLog (
     TransactionType VARCHAR2(10),
     LogDate DATE
 );
-
--- Insert Sample Data
 INSERT INTO Customers (CustomerID, Name, DOB, Balance, LastModified)
 VALUES (1, 'John Doe', TO_DATE('1955-05-15', 'YYYY-MM-DD'), 12000, SYSDATE);
-
 INSERT INTO Customers (CustomerID, Name, DOB, Balance, LastModified)
 VALUES (2, 'Jane Smith', TO_DATE('1990-07-20', 'YYYY-MM-DD'), 1500, SYSDATE);
-
 INSERT INTO Accounts (AccountID, CustomerID, AccountType, Balance, LastModified)
 VALUES (1, 1, 'Savings', 10000, SYSDATE);
-
 INSERT INTO Accounts (AccountID, CustomerID, AccountType, Balance, LastModified)
 VALUES (2, 2, 'Checking', 1500, SYSDATE);
-
 INSERT INTO Loans (LoanID, CustomerID, LoanAmount, InterestRate, StartDate, EndDate)
 VALUES (1, 1, 5000, 5, SYSDATE, SYSDATE + 15);
-
 INSERT INTO Loans (LoanID, CustomerID, LoanAmount, InterestRate, StartDate, EndDate)
 VALUES (2, 2, 8000, 7, SYSDATE, SYSDATE + 45);
-
 INSERT INTO Employees (EmployeeID, Name, Position, Salary, Department, HireDate)
 VALUES (1, 'Alice Johnson', 'Manager', 70000, 'HR', TO_DATE('2015-06-15', 'YYYY-MM-DD'));
-
 INSERT INTO Employees (EmployeeID, Name, Position, Salary, Department, HireDate)
 VALUES (2, 'Bob Brown', 'Developer', 60000, 'IT', TO_DATE('2017-03-20', 'YYYY-MM-DD'));
-
 COMMIT;
-
-
--- ============================================================================
--- Exercise 1: Control Structures
--- ============================================================================
-
--- Scenario 1: Apply 1% discount to loan interest rates for customers above 60 years old.
 DECLARE
     v_age NUMBER;
 BEGIN
@@ -104,8 +79,6 @@ BEGIN
     COMMIT;
 END;
 /
-
--- Scenario 2: Promote customer to VIP status based on balance > $10,000.
 BEGIN
     FOR c IN (SELECT CustomerID, Balance FROM Customers) LOOP
         IF c.Balance > 10000 THEN
@@ -118,8 +91,6 @@ BEGIN
     COMMIT;
 END;
 /
-
--- Scenario 3: Send reminders for loans due within the next 30 days.
 BEGIN
     FOR l IN (
         SELECT l.LoanID, c.Name, l.EndDate
@@ -131,13 +102,6 @@ BEGIN
     END LOOP;
 END;
 /
-
-
--- ============================================================================
--- Exercise 2: Error Handling
--- ============================================================================
-
--- Scenario 1: SafeTransferFunds with exception handling and rollback.
 CREATE OR REPLACE PROCEDURE SafeTransferFunds (
     p_from_acc NUMBER,
     p_to_acc NUMBER,
@@ -150,10 +114,8 @@ BEGIN
     IF v_balance < p_amount THEN
         RAISE e_insufficient_funds;
     END IF;
-
     UPDATE Accounts SET Balance = Balance - p_amount WHERE AccountID = p_from_acc;
     UPDATE Accounts SET Balance = Balance + p_amount WHERE AccountID = p_to_acc;
-
     COMMIT;
     DBMS_OUTPUT.PUT_LINE('Transfer successful: $' || p_amount || ' transferred.');
 EXCEPTION
@@ -165,8 +127,6 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('ERROR: Transfer failed due to -> ' || SQLERRM);
 END;
 /
-
--- Scenario 2: UpdateSalary procedure handling non-existing employee ID.
 CREATE OR REPLACE PROCEDURE UpdateSalary (
     p_emp_id NUMBER,
     p_pct NUMBER
@@ -176,11 +136,9 @@ BEGIN
     UPDATE Employees
     SET Salary = Salary + (Salary * (p_pct / 100))
     WHERE EmployeeID = p_emp_id;
-
     IF SQL%NOTFOUND THEN
         RAISE e_emp_not_found;
     END IF;
-
     COMMIT;
     DBMS_OUTPUT.PUT_LINE('Salary updated successfully for Employee ID: ' || p_emp_id);
 EXCEPTION
@@ -190,8 +148,6 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('ERROR: Update failed -> ' || SQLERRM);
 END;
 /
-
--- Scenario 3: AddNewCustomer procedure preventing duplicate customer ID.
 CREATE OR REPLACE PROCEDURE AddNewCustomer (
     p_cust_id NUMBER,
     p_name VARCHAR2,
@@ -210,13 +166,6 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('ERROR: Failed to add customer -> ' || SQLERRM);
 END;
 /
-
-
--- ============================================================================
--- Exercise 3: Stored Procedures
--- ============================================================================
-
--- Scenario 1: ProcessMonthlyInterest for savings accounts.
 CREATE OR REPLACE PROCEDURE ProcessMonthlyInterest IS
 BEGIN
     UPDATE Accounts
@@ -226,8 +175,6 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('Monthly interest of 1% applied to all Savings Accounts.');
 END;
 /
-
--- Scenario 2: UpdateEmployeeBonus by department.
 CREATE OR REPLACE PROCEDURE UpdateEmployeeBonus (
     p_dept VARCHAR2,
     p_bonus_pct NUMBER
@@ -240,8 +187,6 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('Bonus applied for department: ' || p_dept);
 END;
 /
-
--- Scenario 3: TransferFunds checking sufficient balance.
 CREATE OR REPLACE PROCEDURE TransferFunds (
     p_src_acc NUMBER,
     p_dest_acc NUMBER,
@@ -260,13 +205,6 @@ BEGIN
     END IF;
 END;
 /
-
-
--- ============================================================================
--- Exercise 4: Functions
--- ============================================================================
-
--- Scenario 1: CalculateAge function.
 CREATE OR REPLACE FUNCTION CalculateAge (
     p_dob DATE
 ) RETURN NUMBER IS
@@ -274,8 +212,6 @@ BEGIN
     RETURN TRUNC(MONTHS_BETWEEN(SYSDATE, p_dob) / 12);
 END;
 /
-
--- Scenario 2: CalculateMonthlyInstallment function.
 CREATE OR REPLACE FUNCTION CalculateMonthlyInstallment (
     p_amount NUMBER,
     p_rate NUMBER,
@@ -291,8 +227,6 @@ BEGIN
     RETURN ROUND(v_emi, 2);
 END;
 /
-
--- Scenario 3: HasSufficientBalance function.
 CREATE OR REPLACE FUNCTION HasSufficientBalance (
     p_acc_id NUMBER,
     p_amount NUMBER
@@ -306,13 +240,6 @@ EXCEPTION
         RETURN FALSE;
 END;
 /
-
-
--- ============================================================================
--- Exercise 5: Triggers
--- ============================================================================
-
--- Scenario 1: UpdateCustomerLastModified trigger.
 CREATE OR REPLACE TRIGGER UpdateCustomerLastModified
 BEFORE UPDATE ON Customers
 FOR EACH ROW
@@ -320,8 +247,6 @@ BEGIN
     :NEW.LastModified := SYSDATE;
 END;
 /
-
--- Scenario 2: LogTransaction trigger for AuditLog.
 CREATE OR REPLACE TRIGGER LogTransaction
 AFTER INSERT ON Transactions
 FOR EACH ROW
@@ -330,8 +255,6 @@ BEGIN
     VALUES (:NEW.TransactionID, :NEW.AccountID, :NEW.Amount, :NEW.TransactionType, SYSDATE);
 END;
 /
-
--- Scenario 3: CheckTransactionRules for deposits/withdrawals.
 CREATE OR REPLACE TRIGGER CheckTransactionRules
 BEFORE INSERT ON Transactions
 FOR EACH ROW
@@ -350,13 +273,6 @@ BEGIN
     END IF;
 END;
 /
-
-
--- ============================================================================
--- Exercise 6: Cursors
--- ============================================================================
-
--- Scenario 1: GenerateMonthlyStatements cursor.
 DECLARE
     CURSOR c_monthly_stmt IS
         SELECT t.TransactionID, t.AccountID, t.Amount, t.TransactionType, t.TransactionDate, a.CustomerID
@@ -369,8 +285,6 @@ BEGIN
     END LOOP;
 END;
 /
-
--- Scenario 2: ApplyAnnualFee cursor.
 DECLARE
     v_fee CONSTANT NUMBER := 50;
     CURSOR c_accounts IS
@@ -386,8 +300,6 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('Annual fee of $' || v_fee || ' applied to all accounts.');
 END;
 /
-
--- Scenario 3: UpdateLoanInterestRates cursor.
 DECLARE
     CURSOR c_loans IS
         SELECT LoanID, InterestRate FROM Loans FOR UPDATE;
@@ -401,20 +313,12 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('Updated loan interest rates for all active loans.');
 END;
 /
-
-
--- ============================================================================
--- Exercise 7: Packages
--- ============================================================================
-
--- Scenario 1: CustomerManagement Package
 CREATE OR REPLACE PACKAGE CustomerManagement AS
     PROCEDURE AddCustomer(p_id NUMBER, p_name VARCHAR2, p_dob DATE, p_balance NUMBER);
     PROCEDURE UpdateCustomer(p_id NUMBER, p_name VARCHAR2, p_balance NUMBER);
     FUNCTION GetCustomerBalance(p_id NUMBER) RETURN NUMBER;
 END CustomerManagement;
 /
-
 CREATE OR REPLACE PACKAGE BODY CustomerManagement AS
     PROCEDURE AddCustomer(p_id NUMBER, p_name VARCHAR2, p_dob DATE, p_balance NUMBER) IS
     BEGIN
@@ -422,7 +326,6 @@ CREATE OR REPLACE PACKAGE BODY CustomerManagement AS
         VALUES (p_id, p_name, p_dob, p_balance, SYSDATE);
         COMMIT;
     END AddCustomer;
-
     PROCEDURE UpdateCustomer(p_id NUMBER, p_name VARCHAR2, p_balance NUMBER) IS
     BEGIN
         UPDATE Customers
@@ -430,7 +333,6 @@ CREATE OR REPLACE PACKAGE BODY CustomerManagement AS
         WHERE CustomerID = p_id;
         COMMIT;
     END UpdateCustomer;
-
     FUNCTION GetCustomerBalance(p_id NUMBER) RETURN NUMBER IS
         v_bal NUMBER;
     BEGIN
@@ -439,15 +341,12 @@ CREATE OR REPLACE PACKAGE BODY CustomerManagement AS
     END GetCustomerBalance;
 END CustomerManagement;
 /
-
--- Scenario 2: EmployeeManagement Package
 CREATE OR REPLACE PACKAGE EmployeeManagement AS
     PROCEDURE HireEmployee(p_id NUMBER, p_name VARCHAR2, p_pos VARCHAR2, p_sal NUMBER, p_dept VARCHAR2, p_hiredate DATE);
     PROCEDURE UpdateEmployee(p_id NUMBER, p_pos VARCHAR2, p_sal NUMBER);
     FUNCTION CalculateAnnualSalary(p_id NUMBER) RETURN NUMBER;
 END EmployeeManagement;
 /
-
 CREATE OR REPLACE PACKAGE BODY EmployeeManagement AS
     PROCEDURE HireEmployee(p_id NUMBER, p_name VARCHAR2, p_pos VARCHAR2, p_sal NUMBER, p_dept VARCHAR2, p_hiredate DATE) IS
     BEGIN
@@ -455,13 +354,11 @@ CREATE OR REPLACE PACKAGE BODY EmployeeManagement AS
         VALUES (p_id, p_name, p_pos, p_sal, p_dept, p_hiredate);
         COMMIT;
     END HireEmployee;
-
     PROCEDURE UpdateEmployee(p_id NUMBER, p_pos VARCHAR2, p_sal NUMBER) IS
     BEGIN
         UPDATE Employees SET Position = p_pos, Salary = p_sal WHERE EmployeeID = p_id;
         COMMIT;
     END UpdateEmployee;
-
     FUNCTION CalculateAnnualSalary(p_id NUMBER) RETURN NUMBER IS
         v_sal NUMBER;
     BEGIN
@@ -470,15 +367,12 @@ CREATE OR REPLACE PACKAGE BODY EmployeeManagement AS
     END CalculateAnnualSalary;
 END EmployeeManagement;
 /
-
--- Scenario 3: AccountOperations Package
 CREATE OR REPLACE PACKAGE AccountOperations AS
     PROCEDURE OpenAccount(p_acc_id NUMBER, p_cust_id NUMBER, p_type VARCHAR2, p_balance NUMBER);
     PROCEDURE CloseAccount(p_acc_id NUMBER);
     FUNCTION GetTotalBalance(p_cust_id NUMBER) RETURN NUMBER;
 END AccountOperations;
 /
-
 CREATE OR REPLACE PACKAGE BODY AccountOperations AS
     PROCEDURE OpenAccount(p_acc_id NUMBER, p_cust_id NUMBER, p_type VARCHAR2, p_balance NUMBER) IS
     BEGIN
@@ -486,13 +380,11 @@ CREATE OR REPLACE PACKAGE BODY AccountOperations AS
         VALUES (p_acc_id, p_cust_id, p_type, p_balance, SYSDATE);
         COMMIT;
     END OpenAccount;
-
     PROCEDURE CloseAccount(p_acc_id NUMBER) IS
     BEGIN
         DELETE FROM Accounts WHERE AccountID = p_acc_id;
         COMMIT;
     END CloseAccount;
-
     FUNCTION GetTotalBalance(p_cust_id NUMBER) RETURN NUMBER IS
         v_total NUMBER;
     BEGIN

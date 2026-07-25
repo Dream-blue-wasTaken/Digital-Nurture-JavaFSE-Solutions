@@ -3,7 +3,6 @@
   margin: 2rem auto;
   padding: 0 1rem;
 }
-
 .back-link {
   color: #2563eb;
   text-decoration: none;
@@ -11,7 +10,6 @@
   display: inline-block;
   margin-bottom: 1.5rem;
 }
-
 .detail-card {
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -19,7 +17,6 @@
   padding: 1.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
-
 .detail-header {
   display: flex;
   justify-content: space-between;
@@ -28,12 +25,10 @@
   padding-bottom: 1rem;
   margin-bottom: 1rem;
 }
-
 .detail-header h2 {
   margin: 0;
   color: #0f172a;
 }
-
 .code-tag {
   background: #0284c7;
   color: #fff;
@@ -41,18 +36,15 @@
   border-radius: 4px;
   font-weight: 600;
 }
-
 .detail-info p {
   margin: 0.5rem 0;
   color: #334155;
 }
-
 .students-section {
   margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 1px dashed #cbd5e1;
 }
-
 .students-section h3 {
   font-size: 1rem;
   color: #475569;
